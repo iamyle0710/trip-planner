@@ -1,10 +1,16 @@
 const CATEGORY = {
-	NONE: 'NONE',
-	BuSINESS: 'BuSINESS',
-	VACATION: 'VACATION',
+	NONE: 'None',
+	BUSINESS: 'Business',
+	VACATION: 'Vacation',
 };
 
-const SAMPLEDATA = [
+const TRIP_STATUS = {
+	CREATED: 'Created',
+	IN_PROGRESS: 'In Progress',
+	READY: 'Ready',
+};
+
+const SAMPLE_DATA = [
 	{
 		id: 0,
 		title: 'go to lax',
@@ -12,9 +18,9 @@ const SAMPLEDATA = [
 		description: 'here goes the description',
 		startDate: '2020-05-20',
 		endDate: '2020-05-25',
-		category: 'VACATION',
+		category: 'Vacation',
 		reminder: '2020-05-22T04:00:00.000Z',
-		status: 'CREATED',
+		status: 'Created',
 		todos: [
 			{
 				id: 1,
@@ -35,9 +41,9 @@ const SAMPLEDATA = [
 		description: 'here goes the description',
 		startDate: '2020-05-20',
 		endDate: '2020-05-25',
-		category: 'VACATION',
+		category: 'Vacation',
 		reminder: '2020-05-22T04:00:00.000Z',
-		status: 'CREATED',
+		status: 'Created',
 		todos: [
 			{
 				id: 1,
@@ -58,9 +64,9 @@ const SAMPLEDATA = [
 		description: 'here goes the description',
 		startDate: '2020-05-20',
 		endDate: '2020-05-25',
-		category: 'BuSINESS',
+		category: 'Business',
 		reminder: '2020-05-22T04:00:00.000Z',
-		status: 'CREATED',
+		status: 'Created',
 		todos: [
 			{
 				name: 'todo 1',
@@ -76,5 +82,6 @@ const SAMPLEDATA = [
 
 export default {
 	CATEGORY,
-	SAMPLEDATA,
+	SAMPLE_DATA,
+	TRIP_STATUS,
 };
