@@ -15,6 +15,17 @@ class FilterPanel extends React.Component {
 		};
 	}
 
+	// Click Go Button to search
+	onClickSearch = () => {
+		const { onFilter } = this.props;
+		const { searchKeyword, filterCategory } = this.state;
+
+		// execute callback function to filter trips
+		if (onFilter) {
+			onFilter(searchKeyword, filterCategory);
+		}
+	};
+
 	// Search keyword
 	onSearchChange = ({ target }) => {
 		this.setState({
@@ -24,9 +35,18 @@ class FilterPanel extends React.Component {
 
 	// Filter categories
 	onClickCategory = ({ target }) => {
-		this.setState({
-			filterCategory: target.id,
-		});
+		this.setState(
+			{
+				filterCategory: target.id,
+			},
+			() => {
+				const { searchKeyword, filterCategory } = this.state;
+				const { onFilter } = this.props;
+				if (onFilter) {
+					onFilter(searchKeyword, CATEGORY[filterCategory]);
+				}
+			}
+		);
 	};
 
 	render() {
@@ -41,7 +61,9 @@ class FilterPanel extends React.Component {
 						value={searchKeyword}
 						onChange={this.onSearchChange}
 					/>
-					<Button variant="primary">Go</Button>
+					<Button variant="primary" onClick={this.onClickSearch}>
+						Go
+					</Button>
 				</div>
 				<div className="filter-panel-add-trip">
 					<Button variant="outline-primary" onClick={this.onClick}>
