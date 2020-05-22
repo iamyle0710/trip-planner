@@ -1,0 +1,59 @@
+.filter-panel{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+    padding: 5px;
+}
+
+.filter-panel-row-title{
+    color: #5a5a5a;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.filter-panel-search-box,
+.filter-panel-add-trip{
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0;
+}
+
+.filter-panel-search-box{
+    border: 1px solid var(--border-color);
+    border-radius: var(--box-radius);
+    padding: 5px;
+}
+
+.filter-panel-search-box input{
+    width: 100%;
+    border: none;
+    outline: none;
+}
+
+.filter-panel-add-trip button{
+    width: 100%;
+    border: 1px solid var(--border-color);
+}
+
+.filter-panel-filter-trip{
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+    padding : 5px;
+    border : 1px solid var(--border-color);
+    border-radius: var(--box-radius);
+}
+
+.filter-panel-filter-box{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.filter-panel-filter-box label{
+    margin: 5px;
+    flex: 1;
+}
