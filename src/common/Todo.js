@@ -1,8 +1,8 @@
 export default class Todo {
-	constructor(id, name, isComplete) {
-		this.id = id;
-		this.name = name;
-		this.isComplete = isComplete;
+	constructor({ id, name, isComplete }) {
+		this.id = id || new Date().getTime();
+		this.name = name || '';
+		this.isComplete = isComplete === true;
 	}
 
 	setStatus(isComplete) {
