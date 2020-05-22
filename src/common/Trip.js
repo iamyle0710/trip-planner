@@ -13,7 +13,7 @@ export default class Trip {
 		reminder,
 		status,
 	}) {
-		this.id = id;
+		this.id = id || new Date().getTime();
 		this.title = title;
 		this.category = category;
 		this.destination = destination;

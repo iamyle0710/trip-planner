@@ -9,7 +9,7 @@ import GridPanel from './gridPanel/GridPanel';
 import DetailPanel from './detailPanel/DetailPanel';
 import './App.css';
 
-const { SAMPLE_DATA } = Constant;
+const { SAMPLE_DATA, CATEGORY, TRIP_STATUS } = Constant;
 
 class App extends React.Component {
 	constructor() {
@@ -30,6 +30,19 @@ class App extends React.Component {
 		});
 	}
 
+	// Callback function to add a new trip
+	onAddATrip = () => {
+		const newTrip = new Trip({
+			category: CATEGORY.NONE,
+			status: TRIP_STATUS.CREATED,
+		});
+
+		this.setState({
+			selectTrip: newTrip,
+		});
+	};
+
+	// Callback function to filter displaying trips
 	onFilter = (searchKeyword, filterCategory) => {
 		const { trips } = this.state;
 		this.setState({
@@ -47,7 +60,7 @@ class App extends React.Component {
 				</Row>
 				<Row className="flex-fill d-flex content-row">
 					<Col md={2} className="content-row">
-						<FilterPanel onFilter={this.onFilter} />
+						<FilterPanel onFilter={this.onFilter} onAddATrip={this.onAddATrip} />
 					</Col>
 					<Col md={selectTrip ? 5 : 10} className="content-row">
 						<GridPanel trips={displayTrips} />

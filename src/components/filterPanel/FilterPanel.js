@@ -26,6 +26,15 @@ class FilterPanel extends React.Component {
 		}
 	};
 
+	// Click to add a new trip
+	onClickNewTrip = () => {
+		const { onAddATrip } = this.props;
+		// execute callback function to add a new trip
+		if (onAddATrip) {
+			onAddATrip();
+		}
+	};
+
 	// Search keyword
 	onSearchChange = ({ target }) => {
 		this.setState({
@@ -66,7 +75,7 @@ class FilterPanel extends React.Component {
 					</Button>
 				</div>
 				<div className="filter-panel-add-trip">
-					<Button variant="outline-primary" onClick={this.onClick}>
+					<Button variant="outline-primary" onClick={this.onClickNewTrip}>
 						Add a Trip
 					</Button>
 				</div>
