@@ -4,6 +4,10 @@
 /node_modules
 /.pnp
 .pnp.js
+.eslintrc.json
+.eslintrc.js
+.editorconfig
+settings.json
 
 # testing
 /coverage
