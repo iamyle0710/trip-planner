@@ -67,7 +67,7 @@ class App extends React.Component {
 					</Col>
 					{selectTrip && (
 						<Col md={5} className="content-row">
-							<DetailPanel />
+							<DetailPanel tripData={selectTrip.toData()} />
 						</Col>
 					)}
 				</Row>
