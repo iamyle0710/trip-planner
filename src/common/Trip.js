@@ -1,4 +1,5 @@
 import Todo from './Todo';
+import { isValidDate } from '../utils/helper';
 
 export default class Trip {
 	constructor({
@@ -36,4 +37,19 @@ export default class Trip {
 			this.todos.splice(index, 1);
 		}
 	};
+
+	toData() {
+		return {
+			id: this.id,
+			title: this.title,
+			category: this.category,
+			destination: this.destination,
+			description: this.description,
+			startDate: isValidDate(this.startDate) ? this.startDate.toString() : '',
+			endDate: isValidDate(this.endDate) ? this.endDate.toString() : '',
+			reminder: isValidDate(this.reminder) ? this.reminder.toString() : '',
+			status: this.status,
+			todos: this.todos.map((todo) => todo.toData()),
+		};
+	}
 }
