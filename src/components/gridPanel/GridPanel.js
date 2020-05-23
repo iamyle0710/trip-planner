@@ -1,6 +1,8 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 
+import { getDuration } from '../../utils/helper';
+
 class GridPanel extends React.Component {
 	constructor() {
 		super();
@@ -38,7 +40,7 @@ class GridPanel extends React.Component {
 							<td>{index + 1}</td>
 							<td>{trip.title}</td>
 							<td>{trip.destination}</td>
-							<td>{trip.duration}</td>
+							<td>{getDuration(trip.startDate, trip.endDate)}</td>
 							<td>{trip.category}</td>
 							<td>{trip.reminder ? <i className="fa fa-clock-o" /> : null}</td>
 							<td>

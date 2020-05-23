@@ -16,3 +16,14 @@ export const filterTrips = (trips = [], searchKeyword = '', filterCategory = CAT
 	});
 
 export const isValidDate = (date) => date instanceof Date && !isNaN(date);
+
+export const getDuration = (start, end) => {
+	const startDate = new Date(start);
+	const endDate = new Date(end);
+
+	if (isValidDate(startDate) && isValidDate(endDate) && endDate > startDate) {
+		return Math.floor((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
+	}
+
+	return false;
+};
