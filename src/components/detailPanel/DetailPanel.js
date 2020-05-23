@@ -1,11 +1,11 @@
 import React from 'react';
+import { Row, Col, Form, Button, ListGroup, InputGroup, ButtonGroup, Badge } from 'react-bootstrap';
 
-import { Row, Col, Form, Button, ListGroup, InputGroup, ButtonGroup } from 'react-bootstrap';
 import Constant from '../../common/Constant';
 import CalendarWidget from './CalendarWidget';
 import './DetailPanel.css';
 
-const { CATEGORY } = Constant;
+const { CATEGORY, TRIP_STATUS } = Constant;
 
 class DetailPanel extends React.Component {
 	constructor(props) {
@@ -22,7 +22,7 @@ class DetailPanel extends React.Component {
 			startDate: trip.startDate || new Date(),
 			endDate: trip.endDate,
 			reminder: trip.reminder,
-			status: trip.status,
+			status: trip.status || TRIP_STATUS.CREATED,
 			todos: trip.todos.map(({ id, name, isComplete }) => ({
 				id,
 				name,
@@ -30,6 +30,23 @@ class DetailPanel extends React.Component {
 			})),
 		};
 	}
+
+	// Add a new todo item
+	onAddTodo = () => {
+		this.setState(
+			({ todos }) => ({
+				todos: [
+					...todos,
+					{
+						id: new Date().getTime().toString(),
+						name: '',
+						isComplete: false,
+					},
+				],
+			}),
+			this.updateTripState
+		);
+	};
 
 	// Cancel editing the current form
 	onClickCancel = () => {
@@ -55,6 +72,55 @@ class DetailPanel extends React.Component {
 		});
 	};
 
+	// Change todo item name
+	onChangeTodoName = ({ target }) => {
+		const { value } = target;
+		const index = +target.getAttribute('data-index');
+
+		this.setState(({ todos }) => ({
+			todos: todos.map((todo, i) => {
+				if (i === index) {
+					return {
+						...todo,
+						name: value,
+					};
+				}
+				return { ...todo };
+			}),
+		}));
+	};
+
+	// Change todo item status
+	onChangeTodoStatus = ({ target }) => {
+		const { checked } = target;
+		const index = +target.getAttribute('data-index');
+		this.setState(
+			({ todos }) => ({
+				todos: todos.map((todo, i) => {
+					if (i === index) {
+						return {
+							...todo,
+							isComplete: checked,
+						};
+					}
+					return { ...todo };
+				}),
+			}),
+			this.updateTripState
+		);
+	};
+
+	// Remove the todo item
+	onRemoveTodo = ({ target }) => {
+		const index = +target.getAttribute('data-index');
+		this.setState(
+			({ todos }) => ({
+				todos: todos.filter((todo, i) => i !== index),
+			}),
+			this.updateTripState
+		);
+	};
+
 	// Save the current form
 	onSave = (event) => {
 		event.preventDefault();
@@ -64,6 +130,20 @@ class DetailPanel extends React.Component {
 		if (onSaveEdit) {
 			onSaveEdit(this.state);
 		}
+	};
+
+	// Update states of the trip
+	updateTripState = () => {
+		const { todos } = this.state;
+		const total = todos.length;
+		const completed = todos.filter((todo) => todo.isComplete).length;
+
+		let status = TRIP_STATUS.CREATED;
+		status = total !== 0 && completed === total ? TRIP_STATUS.READY : TRIP_STATUS.IN_PROGRESS;
+
+		this.setState({
+			status,
+		});
 	};
 
 	render() {
@@ -76,12 +156,18 @@ class DetailPanel extends React.Component {
 			endDate,
 			reminder,
 			todos,
+			status,
 		} = this.state;
 
 		return (
 			<div className="detail-panel d-flex">
 				<Form onSubmit={this.onSave}>
-					<h4>Trip Detail</h4>
+					<h4>
+						Trip Detail
+						<Badge className="ml-2" variant="warning">
+							{status}
+						</Badge>
+					</h4>
 					<Form.Group>
 						<Row>
 							<Col>
@@ -169,15 +255,27 @@ class DetailPanel extends React.Component {
 								>
 									<InputGroup>
 										<InputGroup.Prepend>
-											<InputGroup.Checkbox aria-label="Checkbox for following text input" />
+											<InputGroup.Checkbox
+												aria-label="Checkbox for following text input"
+												checked={todo.isComplete}
+												data-index={index}
+												onChange={this.onChangeTodoStatus}
+											/>
 										</InputGroup.Prepend>
 										<Form.Control
 											size="sm"
 											type="text"
 											placeholder="Enter todo item"
+											data-index={index}
+											onChange={this.onChangeTodoName}
 										/>
 										<InputGroup.Append>
-											<Button size="sm" variant="danger">
+											<Button
+												size="sm"
+												variant="danger"
+												data-index={index}
+												onClick={this.onRemoveTodo}
+											>
 												<i
 													className="fa fa-trash-o"
 													style={{ color: '#fff' }}
@@ -188,7 +286,9 @@ class DetailPanel extends React.Component {
 								</ListGroup.Item>
 							))}
 							<ListGroup.Item>
-								<Button variant="outline-primary">Add Todo Item</Button>
+								<Button variant="outline-primary" onClick={this.onAddTodo}>
+									Add Todo Item
+								</Button>
 							</ListGroup.Item>
 						</ListGroup>
 					</Form.Group>
