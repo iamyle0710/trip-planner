@@ -63,6 +63,7 @@ class App extends React.Component {
 		});
 	};
 
+	// Callback function to save the edited trip data
 	onSaveEdit = (tripData) => {
 		const isNewTrip = isNaN(tripData.id);
 		const tripId = isNewTrip ? new Date().getTime().toString() : tripData.id;
@@ -76,6 +77,7 @@ class App extends React.Component {
 						return trip;
 				  })
 				: [...trips, new Trip({ ...tripData, id: tripId })],
+			selectTrip: null,
 		}));
 	};
 
