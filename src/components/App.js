@@ -57,6 +57,22 @@ class App extends React.Component {
 		});
 	};
 
+	onSaveEdit = (tripData) => {
+		const isNewTrip = isNaN(tripData.id);
+		const tripId = isNewTrip ? new Date().getTime() : tripData.id;
+
+		this.setState(({ trips }) => ({
+			trips: !isNewTrip
+				? trips.map((trip) => {
+						if (trip.id === tripData.id) {
+							return new Trip(tripData);
+						}
+						return trip;
+				  })
+				: [...trips, new Trip({ ...tripData, id: tripId })],
+		}));
+	};
+
 	render() {
 		const { displayTrips, selectTrip } = this.state;
 
@@ -75,8 +91,9 @@ class App extends React.Component {
 					{selectTrip && (
 						<Col md={5} className="content-row">
 							<DetailPanel
-								tripData={selectTrip.toData()}
+								trip={selectTrip}
 								onCancelEdit={this.onCancelEdit}
+								onSaveEdit={this.onSaveEdit}
 							/>
 						</Col>
 					)}

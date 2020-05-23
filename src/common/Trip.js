@@ -1,5 +1,4 @@
 import Todo from './Todo';
-import { isValidDate } from '../utils/helper';
 
 export default class Trip {
 	constructor({
