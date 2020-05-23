@@ -148,6 +148,7 @@ class DetailPanel extends React.Component {
 
 	render() {
 		const {
+			id,
 			title,
 			category,
 			destination,
@@ -158,6 +159,7 @@ class DetailPanel extends React.Component {
 			todos,
 			status,
 		} = this.state;
+		const isNewTrip = isNaN(id);
 
 		return (
 			<div className="detail-panel d-flex">
@@ -305,7 +307,7 @@ class DetailPanel extends React.Component {
 						<ButtonGroup>
 							<Button type="submit">Save</Button>
 							<Button onClick={this.onClickCancel}>Cancel</Button>
-							<Button>Delete</Button>
+							{isNewTrip ? null : <Button>Delete</Button>}
 						</ButtonGroup>
 					</Form.Group>
 				</Form>
