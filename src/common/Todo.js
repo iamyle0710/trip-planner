@@ -8,12 +8,4 @@ export default class Todo {
 	setStatus(isComplete) {
 		this.isComplete = isComplete;
 	}
-
-	toData() {
-		return {
-			id: this.id,
-			name: this.name,
-			isComplete: this.isComplete,
-		};
-	}
 }

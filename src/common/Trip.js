@@ -14,16 +14,16 @@ export default class Trip {
 		reminder,
 		status,
 	}) {
-		this.id = id || new Date().getTime();
+		this.id = id;
 		this.title = title;
 		this.category = category;
 		this.destination = destination;
 		this.description = description;
-		this.startDate = new Date(startDate);
-		this.endDate = new Date(endDate);
+		this.startDate = startDate ? new Date(startDate) : new Date();
+		this.endDate = endDate ? new Date(endDate) : new Date();
 		this.todos = Array.isArray(todos) ? todos.map((todo) => new Todo(todo)) : [];
-		this.reminder = new Date(reminder);
-		this.status = status;
+		this.reminder = reminder ? new Date(reminder) : '';
+		this.status = status; // active,
 	}
 
 	addTodo = (data) => {
@@ -37,19 +37,4 @@ export default class Trip {
 			this.todos.splice(index, 1);
 		}
 	};
-
-	toData() {
-		return {
-			id: this.id,
-			title: this.title,
-			category: this.category,
-			destination: this.destination,
-			description: this.description,
-			startDate: isValidDate(this.startDate) ? this.startDate.toString() : '',
-			endDate: isValidDate(this.endDate) ? this.endDate.toString() : '',
-			reminder: isValidDate(this.reminder) ? this.reminder.toString() : '',
-			status: this.status,
-			todos: this.todos.map((todo) => todo.toData()),
-		};
-	}
 }
