@@ -50,6 +50,13 @@ class App extends React.Component {
 		});
 	};
 
+	// Callback function to cancel editing a form
+	onCancelEdit = () => {
+		this.setState({
+			selectTrip: null,
+		});
+	};
+
 	render() {
 		const { displayTrips, selectTrip } = this.state;
 
@@ -67,7 +74,10 @@ class App extends React.Component {
 					</Col>
 					{selectTrip && (
 						<Col md={5} className="content-row">
-							<DetailPanel tripData={selectTrip.toData()} />
+							<DetailPanel
+								tripData={selectTrip.toData()}
+								onCancelEdit={this.onCancelEdit}
+							/>
 						</Col>
 					)}
 				</Row>

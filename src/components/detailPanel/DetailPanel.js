@@ -19,13 +19,12 @@ class DetailPanel extends React.Component {
 		};
 	}
 
-	handleSubmit = (event) => {
-		console.log(event.target.elements);
-		event.preventDefault();
-	};
-
-	onSubmit = (values) => {
-		console.log(values);
+	// Cancel editing the current form
+	onClickCancel = () => {
+		const { onCancelEdit } = this.props;
+		if (onCancelEdit) {
+			onCancelEdit();
+		}
 	};
 
 	render() {
@@ -125,7 +124,7 @@ class DetailPanel extends React.Component {
 					<Form.Group>
 						<ButtonGroup>
 							<Button type="submit">Save</Button>
-							<Button>Cancel</Button>
+							<Button onClick={this.onClickCancel}>Cancel</Button>
 							<Button>Delete</Button>
 						</ButtonGroup>
 					</Form.Group>
