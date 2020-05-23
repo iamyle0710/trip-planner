@@ -11,18 +11,17 @@ class FilterPanel extends React.Component {
 		super();
 		this.state = {
 			searchKeyword: '',
-			filterCategory: CATEGORY.NONE,
 		};
 	}
 
 	// Click Go Button to search
 	onClickSearch = () => {
-		const { onFilter } = this.props;
-		const { searchKeyword, filterCategory } = this.state;
+		const { onChangeSearchKeyword } = this.props;
+		const { searchKeyword } = this.state;
 
 		// execute callback function to filter trips
-		if (onFilter) {
-			onFilter(searchKeyword, filterCategory);
+		if (onChangeSearchKeyword) {
+			onChangeSearchKeyword(searchKeyword);
 		}
 	};
 
@@ -44,22 +43,16 @@ class FilterPanel extends React.Component {
 
 	// Filter categories
 	onClickCategory = ({ target }) => {
-		this.setState(
-			{
-				filterCategory: target.id,
-			},
-			() => {
-				const { searchKeyword, filterCategory } = this.state;
-				const { onFilter } = this.props;
-				if (onFilter) {
-					onFilter(searchKeyword, CATEGORY[filterCategory]);
-				}
-			}
-		);
+		const { onChangeFilterCategory } = this.props;
+
+		if (onChangeFilterCategory) {
+			onChangeFilterCategory(CATEGORY[target.id]);
+		}
 	};
 
 	render() {
-		const { searchKeyword, filterCategory } = this.state;
+		const { searchKeyword } = this.state;
+		const { filterCategory } = this.props;
 
 		return (
 			<div className="filter-panel d-flex">
@@ -81,16 +74,16 @@ class FilterPanel extends React.Component {
 				</div>
 				<div className="filter-panel-filter-trip">
 					<div className="filter-panel-row-title">Filter By Category</div>
-					{Object.keys(CATEGORY).map((category) => (
-						<div key={category} className="filter-panel-filter-box">
+					{Object.keys(CATEGORY).map((type) => (
+						<div key={type} className="filter-panel-filter-box">
 							<input
 								type="radio"
-								id={category}
+								id={type}
 								name="filter-category"
 								onChange={this.onClickCategory}
-								checked={filterCategory === category}
+								checked={filterCategory === CATEGORY[type]}
 							/>
-							<label htmlFor={category}>{CATEGORY[category]}</label>
+							<label htmlFor={type}>{CATEGORY[type]}</label>
 						</div>
 					))}
 				</div>

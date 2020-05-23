@@ -16,7 +16,8 @@ class App extends React.Component {
 		super();
 		this.state = {
 			selectTrip: null,
-			displayTrips: [],
+			searchKeyword: '',
+			filterCategory: CATEGORY.NONE,
 			trips: [],
 		};
 	}
@@ -26,7 +27,6 @@ class App extends React.Component {
 		const trips = SAMPLE_DATA.map((trip) => new Trip(trip));
 		this.setState({
 			trips,
-			displayTrips: trips,
 		});
 	}
 
@@ -42,11 +42,17 @@ class App extends React.Component {
 		});
 	};
 
-	// Callback function to filter displaying trips
-	onFilter = (searchKeyword, filterCategory) => {
-		const { trips } = this.state;
+	// Callback function to change search keyword
+	onChangeSearchKeyword = (searchKeyword) => {
 		this.setState({
-			displayTrips: filterTrips(trips, searchKeyword, filterCategory),
+			searchKeyword,
+		});
+	};
+
+	// Callback function to change filter category
+	onChangeFilterCategory = (filterCategory) => {
+		this.setState({
+			filterCategory,
 		});
 	};
 
@@ -59,12 +65,12 @@ class App extends React.Component {
 
 	onSaveEdit = (tripData) => {
 		const isNewTrip = isNaN(tripData.id);
-		const tripId = isNewTrip ? new Date().getTime() : tripData.id;
+		const tripId = isNewTrip ? new Date().getTime().toString() : tripData.id;
 
 		this.setState(({ trips }) => ({
 			trips: !isNewTrip
 				? trips.map((trip) => {
-						if (trip.id === tripData.id) {
+						if (trip.id === tripId) {
 							return new Trip(tripData);
 						}
 						return trip;
@@ -74,7 +80,8 @@ class App extends React.Component {
 	};
 
 	render() {
-		const { displayTrips, selectTrip } = this.state;
+		const { trips, selectTrip, searchKeyword, filterCategory } = this.state;
+		const displayTrips = filterTrips(trips, searchKeyword, filterCategory);
 
 		return (
 			<Container fluid className="app h-100 d-flex flex-column">
@@ -83,7 +90,12 @@ class App extends React.Component {
 				</Row>
 				<Row className="flex-fill d-flex content-row">
 					<Col md={2} className="content-row">
-						<FilterPanel onFilter={this.onFilter} onAddATrip={this.onAddATrip} />
+						<FilterPanel
+							filterCategory={filterCategory}
+							onChangeSearchKeyword={this.onChangeSearchKeyword}
+							onChangeFilterCategory={this.onChangeFilterCategory}
+							onAddATrip={this.onAddATrip}
+						/>
 					</Col>
 					<Col md={selectTrip ? 5 : 10} className="content-row">
 						<GridPanel trips={displayTrips} />
