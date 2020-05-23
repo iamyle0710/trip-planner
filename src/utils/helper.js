@@ -14,3 +14,5 @@ export const filterTrips = (trips = [], searchKeyword = '', filterCategory = CAT
 
 		return isCategoryMatched && isSearchMatched;
 	});
+
+export const isValidDate = (date) => date instanceof Date && !isNaN(date);
