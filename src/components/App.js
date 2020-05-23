@@ -81,6 +81,13 @@ class App extends React.Component {
 		}));
 	};
 
+	// Callback function to select a trip to edit
+	onSelectTrip = (trip) => {
+		this.setState({
+			selectTrip: trip,
+		});
+	};
+
 	render() {
 		const { trips, selectTrip, searchKeyword, filterCategory } = this.state;
 		const displayTrips = filterTrips(trips, searchKeyword, filterCategory);
@@ -100,11 +107,12 @@ class App extends React.Component {
 						/>
 					</Col>
 					<Col md={selectTrip ? 5 : 10} className="content-row">
-						<GridPanel trips={displayTrips} />
+						<GridPanel trips={displayTrips} onSelectTrip={this.onSelectTrip} />
 					</Col>
 					{selectTrip && (
 						<Col md={5} className="content-row">
 							<DetailPanel
+								key={selectTrip.id}
 								trip={selectTrip}
 								onCancelEdit={this.onCancelEdit}
 								onSaveEdit={this.onSaveEdit}
