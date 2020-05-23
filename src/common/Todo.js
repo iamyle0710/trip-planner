@@ -4,8 +4,4 @@ export default class Todo {
 		this.name = name || '';
 		this.isComplete = isComplete === true;
 	}
-
-	setStatus(isComplete) {
-		this.isComplete = isComplete;
-	}
 }

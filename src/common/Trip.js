@@ -24,16 +24,4 @@ export default class Trip {
 		this.reminder = reminder ? new Date(reminder) : '';
 		this.status = status; // active,
 	}
-
-	addTodo = (data) => {
-		const todo = new Todo(data);
-		this.todos.push(todo);
-	};
-
-	removeTodo = ({ id }) => {
-		const index = this.todos.findIndex((todo) => todo.id === id);
-		if (index !== -1) {
-			this.todos.splice(index, 1);
-		}
-	};
 }
