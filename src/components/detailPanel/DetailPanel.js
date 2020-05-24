@@ -1,8 +1,12 @@
 import React from 'react';
-import { Row, Col, Form, Button, ListGroup, InputGroup, ButtonGroup, Badge } from 'react-bootstrap';
+import { Row, Col, Form, Button, ListGroup, ButtonGroup, Badge } from 'react-bootstrap';
+import { v4 as uuidv4 } from 'uuid';
 
 import Constant from '../../common/Constant';
-import CalendarWidget from './CalendarWidget';
+import { isValidDate } from '../../utils/helper';
+import FormDateField from './FormDateField';
+import FormField from './FormField';
+import FormTodo from './FormTodo';
 import './DetailPanel.css';
 
 const { CATEGORY, TRIP_STATUS } = Constant;
@@ -12,14 +16,13 @@ class DetailPanel extends React.Component {
 		super(props);
 
 		const { trip } = this.props;
-
 		this.state = {
 			id: trip.id,
 			title: trip.title || '',
 			category: trip.category || CATEGORY.NONE,
 			destination: trip.destination || '',
 			description: trip.description || '',
-			startDate: trip.startDate || new Date(),
+			startDate: trip.startDate,
 			endDate: trip.endDate,
 			reminder: trip.reminder,
 			status: trip.status || TRIP_STATUS.CREATED,
@@ -28,8 +31,39 @@ class DetailPanel extends React.Component {
 				name,
 				isComplete,
 			})),
+			isValidated: false,
 		};
 	}
+
+	// return boolean
+	validate = (field, value) => {
+		const data = this.state;
+
+		switch (field) {
+			case 'title':
+			case 'category':
+			case 'destination':
+			case 'description':
+			case 'todo':
+				return value !== '';
+			case 'startDate':
+			case 'reminder':
+				return isValidDate(data[field]) && data[field] > new Date();
+			case 'endDate':
+				return isValidDate(data[field]) && data[field] > data.startDate;
+			default:
+				return true;
+		}
+	};
+
+	// return a data object
+	processFormData = () => {
+		const data = { ...this.state };
+
+		delete data.isValidated;
+
+		return data;
+	};
 
 	// Add a new todo item
 	onAddTodo = () => {
@@ -38,7 +72,7 @@ class DetailPanel extends React.Component {
 				todos: [
 					...todos,
 					{
-						id: new Date().getTime().toString(),
+						id: uuidv4(),
 						name: '',
 						isComplete: false,
 					},
@@ -57,53 +91,24 @@ class DetailPanel extends React.Component {
 	};
 
 	// Change field of the trip form
-	onChangeField = ({ target }) => {
-		const { name, value } = target;
-
+	onChangeField = (key, value) => {
 		this.setState({
-			[name]: value,
+			[key]: value,
 		});
 	};
 
-	// Change date of the trip form
-	onChangeDate = (name, value) => {
-		this.setState({
-			[name]: value,
-		});
-	};
-
-	// Change todo item name
-	onChangeTodoName = ({ target }) => {
-		const { value } = target;
-		const index = +target.getAttribute('data-index');
-
-		this.setState(({ todos }) => ({
-			todos: todos.map((todo, i) => {
-				if (i === index) {
-					return {
-						...todo,
-						name: value,
-					};
-				}
-				return { ...todo };
-			}),
-		}));
-	};
-
-	// Change todo item status
-	onChangeTodoStatus = ({ target }) => {
-		const { checked } = target;
-		const index = +target.getAttribute('data-index');
+	// Change todo item name and status
+	onChangeTodo = (id, key, value) => {
 		this.setState(
 			({ todos }) => ({
-				todos: todos.map((todo, i) => {
-					if (i === index) {
+				todos: todos.map((todo) => {
+					if (todo.id === id) {
 						return {
 							...todo,
-							isComplete: checked,
+							[key]: value,
 						};
 					}
-					return { ...todo };
+					return todo;
 				}),
 			}),
 			this.updateTripState
@@ -111,11 +116,10 @@ class DetailPanel extends React.Component {
 	};
 
 	// Remove the todo item
-	onRemoveTodo = ({ target }) => {
-		const index = +target.getAttribute('data-index');
+	onRemoveTodo = (id) => {
 		this.setState(
 			({ todos }) => ({
-				todos: todos.filter((todo, i) => i !== index),
+				todos: todos.filter((todo) => todo.id !== id),
 			}),
 			this.updateTripState
 		);
@@ -124,12 +128,18 @@ class DetailPanel extends React.Component {
 	// Save the current form
 	onSave = (event) => {
 		event.preventDefault();
-
+		const form = event.currentTarget;
 		const { onSaveEdit } = this.props;
+		const isFormValid = form.checkValidity();
 
-		if (onSaveEdit) {
-			onSaveEdit(this.state);
+		if (isFormValid && onSaveEdit) {
+			const formData = this.processFormData({ ...this.state });
+			onSaveEdit(formData);
 		}
+
+		this.setState({
+			isValidated: true,
+		});
 	};
 
 	// Update states of the trip
@@ -138,12 +148,13 @@ class DetailPanel extends React.Component {
 		const total = todos.length;
 		const completed = todos.filter((todo) => todo.isComplete).length;
 
-		let status = TRIP_STATUS.CREATED;
-		status = total !== 0 && completed === total ? TRIP_STATUS.READY : TRIP_STATUS.IN_PROGRESS;
-
-		this.setState({
-			status,
-		});
+		if (completed === 0) {
+			this.setState({ status: TRIP_STATUS.CREATED });
+		} else if (completed === total) {
+			this.setState({ status: TRIP_STATUS.READY });
+		} else {
+			this.setState({ status: TRIP_STATUS.IN_PROGRESS });
+		}
 	};
 
 	render() {
@@ -158,12 +169,13 @@ class DetailPanel extends React.Component {
 			reminder,
 			todos,
 			status,
+			isValidated,
 		} = this.state;
-		const isNewTrip = isNaN(id);
+		const isNewTrip = id === undefined;
 
 		return (
 			<div className="detail-panel d-flex">
-				<Form onSubmit={this.onSave}>
+				<Form noValidate validated={isValidated} onSubmit={this.onSave}>
 					<h4>
 						Trip Detail
 						<Badge className="ml-2" variant="warning">
@@ -173,56 +185,61 @@ class DetailPanel extends React.Component {
 					<Form.Group>
 						<Row>
 							<Col>
-								<Form.Label>Title</Form.Label>
-								<Form.Control
-									size="sm"
+								<FormField
+									required
+									as="input"
 									type="text"
-									placeholder="Title"
-									value={title}
+									label="Title"
+									placeholder="Type your trip title"
 									name="title"
-									onChange={this.onChangeField}
+									value={title}
+									onChangeField={this.onChangeField}
+									invalidMessage="Please type a title"
 								/>
 							</Col>
 							<Col>
-								<Form.Label>Category</Form.Label>
-								<Form.Control
+								<FormField
 									as="select"
-									size="sm"
-									value={category}
+									label="Category"
 									name="category"
-									onChange={this.onChangeField}
+									value={category}
+									onChangeField={this.onChangeField}
 								>
 									{Object.keys(CATEGORY).map((type) => (
-										<option key={type} value={type}>
+										<option key={type} value={CATEGORY[type]}>
 											{CATEGORY[type]}
 										</option>
 									))}
-								</Form.Control>
+								</FormField>
 							</Col>
 						</Row>
 					</Form.Group>
 					<Form.Group>
 						<Row>
 							<Col>
-								<Form.Label>Destination</Form.Label>
-								<Form.Control
-									size="sm"
+								<FormField
+									required
+									as="input"
 									type="text"
+									label="Destination"
 									placeholder="Enter your destination"
-									value={destination}
 									name="destination"
-									onChange={this.onChangeField}
+									value={destination}
+									onChangeField={this.onChangeField}
+									invalidMessage="Please enter a destination"
 								/>
 							</Col>
 							<Col>
-								<Form.Label>Description</Form.Label>
-								<Form.Control
-									size="sm"
+								<FormField
+									required
+									as="input"
 									type="text"
-									placeholder="Enter description"
-									value={description}
+									label="Description"
+									placeholder="Enter the trip description"
 									name="description"
-									onChange={this.onChangeField}
+									value={description}
+									onChangeField={this.onChangeField}
+									invalidMessage="Please enter a description"
 								/>
 							</Col>
 						</Row>
@@ -230,19 +247,25 @@ class DetailPanel extends React.Component {
 					<Form.Group>
 						<Row>
 							<Col>
-								<Form.Label>Start</Form.Label>
-								<CalendarWidget
+								<FormDateField
+									required
+									label="Start Date"
 									name="startDate"
 									value={startDate}
-									onChange={this.onChangeDate}
+									minDate={new Date()}
+									onChangeField={this.onChangeField}
+									invalidMessage="Select a date"
 								/>
 							</Col>
 							<Col>
-								<Form.Label>End</Form.Label>
-								<CalendarWidget
+								<FormDateField
+									required
+									label="End Date"
 									name="endDate"
-									value={endDate}
-									onChange={this.onChangeDate}
+									value={this.validate('endDate', endDate) ? endDate : null}
+									minDate={startDate}
+									onChangeField={this.onChangeField}
+									invalidMessage="it needs to be later than the start date"
 								/>
 							</Col>
 						</Row>
@@ -250,42 +273,14 @@ class DetailPanel extends React.Component {
 					<Form.Group>
 						<Form.Label>Todo Items</Form.Label>
 						<ListGroup varient="flush">
-							{todos.map((todo, index) => (
-								<ListGroup.Item
-									key={index}
-									className="detail-panel-trip-form-todoListItem"
-								>
-									<InputGroup>
-										<InputGroup.Prepend>
-											<InputGroup.Checkbox
-												aria-label="Checkbox for following text input"
-												checked={todo.isComplete}
-												data-index={index}
-												onChange={this.onChangeTodoStatus}
-											/>
-										</InputGroup.Prepend>
-										<Form.Control
-											size="sm"
-											type="text"
-											placeholder="Enter todo item"
-											data-index={index}
-											onChange={this.onChangeTodoName}
-										/>
-										<InputGroup.Append>
-											<Button
-												size="sm"
-												variant="danger"
-												data-index={index}
-												onClick={this.onRemoveTodo}
-											>
-												<i
-													className="fa fa-trash-o"
-													style={{ color: '#fff' }}
-												/>
-											</Button>
-										</InputGroup.Append>
-									</InputGroup>
-								</ListGroup.Item>
+							{todos.map((todo) => (
+								<FormTodo
+									key={todo.id}
+									{...todo}
+									placeholder="Enter todo item"
+									onChangeTodo={this.onChangeTodo}
+									onRemoveTodo={this.onRemoveTodo}
+								/>
 							))}
 							<ListGroup.Item>
 								<Button variant="outline-primary" onClick={this.onAddTodo}>
@@ -295,12 +290,13 @@ class DetailPanel extends React.Component {
 						</ListGroup>
 					</Form.Group>
 					<Form.Group>
-						<Form.Label>Set Reminder</Form.Label>
-						<CalendarWidget
+						<FormDateField
 							showTime
+							label="Set Reminder"
 							name="reminder"
-							value={reminder}
-							onChange={this.onChangeDate}
+							value={this.validate('reminder', reminder) ? reminder : null}
+							minDate={new Date()}
+							onChangeField={this.onChangeField}
 						/>
 					</Form.Group>
 					<Form.Group>
