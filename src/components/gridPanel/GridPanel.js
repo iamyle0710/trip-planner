@@ -2,26 +2,37 @@ import React from 'react';
 import { Table } from 'react-bootstrap';
 
 import { getDuration } from '../../utils/helper';
+import './GridPanel.css';
 
 class GridPanel extends React.Component {
 	constructor() {
 		super();
+
+		this.state = {
+			selectTripId: null,
+		};
 	}
 
 	// Click table row to select a trip to edit
 	onClickTrip = ({ currentTarget }) => {
-		const { onSelectTrip, trips } = this.props;
-		const index = +currentTarget.getAttribute('data-index');
+		const { onSelectTrip } = this.props;
+		const id = currentTarget.getAttribute('data-index');
+
+		this.setState({
+			selectTripId: id,
+		});
+
 		if (onSelectTrip) {
-			onSelectTrip(trips[index]);
+			onSelectTrip(id);
 		}
 	};
 
 	render() {
 		const { trips } = this.props;
+		const { selectTripId } = this.state;
 
 		return (
-			<Table striped bordered hover>
+			<Table striped bordered hover className="gridPanel">
 				<thead>
 					<tr>
 						<th>#</th>
@@ -36,7 +47,12 @@ class GridPanel extends React.Component {
 				</thead>
 				<tbody>
 					{trips.map((trip, index) => (
-						<tr key={trip.id} data-index={index} onClick={this.onClickTrip}>
+						<tr
+							key={trip.id}
+							data-index={trip.id}
+							onClick={this.onClickTrip}
+							className={selectTripId === trip.id ? 'selected' : ''}
+						>
 							<td>{index + 1}</td>
 							<td>{trip.title}</td>
 							<td>{trip.destination}</td>
