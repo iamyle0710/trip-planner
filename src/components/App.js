@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import { v4 as uuidv4 } from 'uuid';
 
 import Trip from '../common/Trip';
 import Constant from '../common/Constant';
@@ -35,6 +36,7 @@ class App extends React.Component {
 		const newTrip = new Trip({
 			category: CATEGORY.NONE,
 			status: TRIP_STATUS.CREATED,
+			startDate: new Date(),
 		});
 
 		this.setState({
@@ -65,8 +67,8 @@ class App extends React.Component {
 
 	// Callback function to save the edited trip data
 	onSaveEdit = (tripData) => {
-		const isNewTrip = isNaN(tripData.id);
-		const tripId = isNewTrip ? new Date().getTime().toString() : tripData.id;
+		const isNewTrip = tripData.id === undefined;
+		const tripId = isNewTrip ? uuidv4() : tripData.id;
 
 		this.setState(({ trips }) => ({
 			trips: !isNewTrip
@@ -82,10 +84,10 @@ class App extends React.Component {
 	};
 
 	// Callback function to select a trip to edit
-	onSelectTrip = (trip) => {
-		this.setState({
-			selectTrip: trip,
-		});
+	onSelectTrip = (id) => {
+		const { trips } = this.state;
+		const selectTrip = trips.find((trip) => trip.id === id);
+		this.setState({ selectTrip });
 	};
 
 	render() {
