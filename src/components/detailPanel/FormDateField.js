@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
-
 import 'react-datepicker/dist/react-datepicker.css';
+
 import './FormDateField.css';
 
 class CustomInput extends React.Component {
@@ -50,12 +50,21 @@ const FormDateField = ({
 	const timeInputLabel = showTime === true ? 'Time:' : '';
 	const dateFormat = `MM/dd/yyyy${showTime === true ? ' hh:mm aa' : ''}`;
 	const [isValid, setIsValid] = useState(null);
+	const [isChecked, setIsChecked] = useState(showTime && value !== null);
 	const [dateFieldTarget, setDateFieldTarget] = useState(null);
 
 	const onCalendarClose = () => {
 		if (dateFieldTarget) {
 			setIsValid(dateFieldTarget.checkValidity());
 		}
+	};
+
+	const onChangeCheckStatus = ({ currentTarget }) => {
+		const { checked } = currentTarget;
+		const newDate = checked ? minDate : null;
+
+		setIsChecked(checked);
+		onChangeDateField(newDate);
 	};
 
 	const onChangeDateField = (newDate) => {
@@ -71,30 +80,44 @@ const FormDateField = ({
 
 	return (
 		<>
-			<Form.Label>{label}</Form.Label>
-			<DatePicker
-				required={required}
-				selected={value}
-				dateFormat={dateFormat}
-				timeInputLabel={timeInputLabel}
-				showTimeInput={showTime === true}
-				customInput={
-					<CustomInput
-						invalidMessage={invalidMessage}
-						isValid={isValid}
-						setIsValid={setIsValid}
-						dateFieldTarget={dateFieldTarget}
-						setDateFieldTarget={setDateFieldTarget}
-						min={minDate}
+			<Form.Label>
+				{label}
+				{showTime && (
+					<input
+						type="checkbox"
+						className="ml-2"
+						checked={isChecked}
+						onChange={onChangeCheckStatus}
 					/>
-				}
-				minDate={minDate}
-				maxDate={maxDate}
-				onCalendarClose={onCalendarClose}
-				onChange={onChangeDateField}
-				onBlur={onBlurDateField}
-				className={`form-control form-control-sm ${isValid === false ? 'is-invalid' : ''} `}
-			/>
+				)}
+			</Form.Label>
+			{(isChecked || !showTime) && (
+				<DatePicker
+					required={required}
+					selected={value}
+					dateFormat={dateFormat}
+					timeInputLabel={timeInputLabel}
+					showTimeInput={showTime === true}
+					customInput={
+						<CustomInput
+							invalidMessage={invalidMessage}
+							isValid={isValid}
+							setIsValid={setIsValid}
+							dateFieldTarget={dateFieldTarget}
+							setDateFieldTarget={setDateFieldTarget}
+							min={minDate}
+						/>
+					}
+					minDate={minDate}
+					maxDate={maxDate}
+					onCalendarClose={onCalendarClose}
+					onChange={onChangeDateField}
+					onBlur={onBlurDateField}
+					className={`form-control form-control-sm ${
+						isValid === false ? 'is-invalid' : ''
+					} `}
+				/>
+			)}
 		</>
 	);
 };
