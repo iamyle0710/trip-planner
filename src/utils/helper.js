@@ -22,7 +22,7 @@ export const getDuration = (start, end) => {
 	const endDate = new Date(end);
 
 	if (isValidDate(startDate) && isValidDate(endDate) && endDate > startDate) {
-		return Math.floor((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
+		return Math.floor((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000)) + 1;
 	}
 
 	return 0;
