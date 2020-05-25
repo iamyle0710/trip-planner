@@ -25,7 +25,7 @@ class DetailPanel extends React.Component {
 			description: trip.description || '',
 			startDate: trip.startDate,
 			endDate: trip.endDate,
-			reminder: trip.reminder > new Date() ? trip.reminder : null,
+			reminder: trip.reminder,
 			status: trip.status || TRIP_STATUS.CREATED,
 			todos: trip.todos.map(({ id, name, isComplete }) => ({
 				id,
@@ -35,27 +35,6 @@ class DetailPanel extends React.Component {
 			isValidated: false,
 		};
 	}
-
-	// return boolean
-	validate = (field, value) => {
-		const data = this.state;
-
-		switch (field) {
-			case 'title':
-			case 'category':
-			case 'destination':
-			case 'description':
-			case 'todo':
-				return value !== '';
-			case 'startDate':
-			case 'reminder':
-				return isValidDate(data[field]) && data[field] > new Date();
-			case 'endDate':
-				return isValidDate(data[field]) && data[field] > data.startDate;
-			default:
-				return true;
-		}
-	};
 
 	// return a data object
 	processFormData = () => {
@@ -91,6 +70,31 @@ class DetailPanel extends React.Component {
 		}
 	};
 
+	// Click to remove the trip
+	onClickRemove = () => {
+		const { onRemoveTrip } = this.props;
+		const { id } = this.state;
+		if (onRemoveTrip) {
+			onRemoveTrip(id);
+		}
+	};
+
+	// Save the current form
+	onClickSave = () => {
+		const form = this.formRef ? this.formRef.current : null;
+		const { onSaveEdit } = this.props;
+		const isFormValid = form ? form.checkValidity() : false;
+
+		if (isFormValid && onSaveEdit) {
+			const formData = this.processFormData({ ...this.state });
+			onSaveEdit(formData);
+		}
+
+		this.setState({
+			isValidated: true,
+		});
+	};
+
 	// Change field of the trip form
 	onChangeField = (key, value) => {
 		this.setState({
@@ -124,22 +128,6 @@ class DetailPanel extends React.Component {
 			}),
 			this.updateTripState
 		);
-	};
-
-	// Save the current form
-	onSave = () => {
-		const form = this.formRef ? this.formRef.current : null;
-		const { onSaveEdit } = this.props;
-		const isFormValid = form ? form.checkValidity() : false;
-
-		if (isFormValid && onSaveEdit) {
-			const formData = this.processFormData({ ...this.state });
-			onSaveEdit(formData);
-		}
-
-		this.setState({
-			isValidated: true,
-		});
 	};
 
 	// Update states of the trip
@@ -262,7 +250,9 @@ class DetailPanel extends React.Component {
 									required
 									label="End Date"
 									name="endDate"
-									value={this.validate('endDate', endDate) ? endDate : null}
+									value={
+										isValidDate(endDate) && endDate > startDate ? endDate : null
+									}
 									minDate={startDate}
 									onChangeField={this.onChangeField}
 									invalidMessage="it needs to be later than the start date"
@@ -272,7 +262,7 @@ class DetailPanel extends React.Component {
 					</Form.Group>
 					<Form.Group>
 						<Form.Label>Todo Items</Form.Label>
-						<ListGroup varient="flush">
+						<ListGroup varient="flush" className="todoList">
 							{todos.map((todo) => (
 								<FormTodo
 									key={todo.id}
@@ -294,16 +284,18 @@ class DetailPanel extends React.Component {
 							showTime
 							label="Set Reminder"
 							name="reminder"
-							value={this.validate('reminder', reminder) ? reminder : null}
+							value={reminder}
 							minDate={new Date()}
 							onChangeField={this.onChangeField}
 						/>
 					</Form.Group>
 					<Form.Group>
 						<ButtonGroup>
-							<Button onClick={this.onSave}>Save</Button>
+							<Button onClick={this.onClickSave}>Save</Button>
 							<Button onClick={this.onClickCancel}>Cancel</Button>
-							{isNewTrip ? null : <Button>Delete</Button>}
+							{isNewTrip ? null : (
+								<Button onClick={this.onClickRemove}>Delete</Button>
+							)}
 						</ButtonGroup>
 					</Form.Group>
 				</Form>

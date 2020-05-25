@@ -12,3 +12,7 @@
     background-image: inherit !important;
 	box-shadow:inherit !important;
 }
+
+.todoList{
+	max-height: 300px;
+}

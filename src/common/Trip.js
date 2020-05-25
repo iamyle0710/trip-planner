@@ -1,3 +1,4 @@
+import { isValidDate } from '../utils/helper';
 import Todo from './Todo';
 
 export default class Trip {
@@ -13,6 +14,8 @@ export default class Trip {
 		reminder,
 		status,
 	}) {
+		const reminderDate = new Date(reminder);
+
 		this.id = id;
 		this.title = title;
 		this.category = category;
@@ -21,7 +24,10 @@ export default class Trip {
 		this.startDate = startDate ? new Date(startDate) : null;
 		this.endDate = endDate ? new Date(endDate) : null;
 		this.todos = Array.isArray(todos) ? todos.map((todo) => new Todo(todo)) : [];
-		this.reminder = reminder ? new Date(reminder) : null;
-		this.status = status; // active,
+		this.reminder =
+			isValidDate(reminderDate) && reminderDate > new Date() ? reminderDate : null;
+		this.isReminderPending =
+			isValidDate(reminderDate) && reminderDate.getTime() - new Date().getTime() > 0;
+		this.status = status;
 	}
 }
