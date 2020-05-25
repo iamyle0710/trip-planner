@@ -16,6 +16,7 @@ class DetailPanel extends React.Component {
 		super(props);
 
 		const { trip } = this.props;
+		this.formRef = React.createRef();
 		this.state = {
 			id: trip.id,
 			title: trip.title || '',
@@ -24,7 +25,7 @@ class DetailPanel extends React.Component {
 			description: trip.description || '',
 			startDate: trip.startDate,
 			endDate: trip.endDate,
-			reminder: trip.reminder,
+			reminder: trip.reminder > new Date() ? trip.reminder : null,
 			status: trip.status || TRIP_STATUS.CREATED,
 			todos: trip.todos.map(({ id, name, isComplete }) => ({
 				id,
@@ -126,11 +127,10 @@ class DetailPanel extends React.Component {
 	};
 
 	// Save the current form
-	onSave = (event) => {
-		event.preventDefault();
-		const form = event.currentTarget;
+	onSave = () => {
+		const form = this.formRef ? this.formRef.current : null;
 		const { onSaveEdit } = this.props;
-		const isFormValid = form.checkValidity();
+		const isFormValid = form ? form.checkValidity() : false;
 
 		if (isFormValid && onSaveEdit) {
 			const formData = this.processFormData({ ...this.state });
@@ -175,7 +175,7 @@ class DetailPanel extends React.Component {
 
 		return (
 			<div className="detail-panel d-flex">
-				<Form noValidate validated={isValidated} onSubmit={this.onSave}>
+				<Form noValidate validated={isValidated} ref={this.formRef}>
 					<h4>
 						Trip Detail
 						<Badge className="ml-2" variant="warning">
@@ -252,7 +252,7 @@ class DetailPanel extends React.Component {
 									label="Start Date"
 									name="startDate"
 									value={startDate}
-									minDate={new Date()}
+									minDate={new Date(new Date().toLocaleDateString())}
 									onChangeField={this.onChangeField}
 									invalidMessage="Select a date"
 								/>
@@ -301,7 +301,7 @@ class DetailPanel extends React.Component {
 					</Form.Group>
 					<Form.Group>
 						<ButtonGroup>
-							<Button type="submit">Save</Button>
+							<Button onClick={this.onSave}>Save</Button>
 							<Button onClick={this.onClickCancel}>Cancel</Button>
 							{isNewTrip ? null : <Button>Delete</Button>}
 						</ButtonGroup>
