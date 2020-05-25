@@ -38,7 +38,9 @@ const GridPanel = ({ trips, selectTripId, onSelectTrip }) => {
 						<td>{index + 1}</td>
 						<td>{trip.title}</td>
 						<td>{trip.destination}</td>
-						<td>{trip.duration}</td>
+						<td>
+							{trip.duration} {trip.duration <= 1 ? 'day' : 'days'}
+						</td>
 						<td>{trip.category}</td>
 						<td>{trip.isReminderPending ? <i className="fa fa-clock-o" /> : null}</td>
 						<td>

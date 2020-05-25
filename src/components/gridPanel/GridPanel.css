@@ -1,6 +1,7 @@
 .gridPanel {
 	display: inline-block;
 	overflow:auto;
+	margin:  15px 0;
 }
 
 .gridPanel tr.selected{
