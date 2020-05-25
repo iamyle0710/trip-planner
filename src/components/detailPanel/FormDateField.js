@@ -6,20 +6,17 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './FormDateField.css';
 
 class CustomInput extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	onBlur = ({ currentTarget }) => {
-		const { setIsValid, dateFieldTarget, setDateFieldTarget } = this.props;
-		if (!dateFieldTarget) {
-			setDateFieldTarget(currentTarget);
-		}
-		setIsValid(currentTarget.checkValidity());
-	};
-
 	render() {
-		const { required, value, onClick, onChange, invalidMessage, isValid } = this.props;
+		const {
+			required,
+			value,
+			onClick,
+			onChange,
+			onBlur,
+			invalidMessage,
+			isValid,
+			min,
+		} = this.props;
 
 		return (
 			<Form.Group>
@@ -29,7 +26,8 @@ class CustomInput extends React.Component {
 					value={value}
 					onClick={onClick}
 					onChange={onChange}
-					onBlur={this.onBlur}
+					onBlur={onBlur}
+					min={min}
 					className={isValid === false ? 'is-invalid' : ''}
 				/>
 				<Form.Control.Feedback type="invalid">{invalidMessage}</Form.Control.Feedback>
@@ -50,7 +48,7 @@ const FormDateField = ({
 	label,
 }) => {
 	const timeInputLabel = showTime === true ? 'Time:' : '';
-	const dateFormat = `MM/dd/yyyy${showTime === true ? ' h:mm aa' : ''}`;
+	const dateFormat = `MM/dd/yyyy${showTime === true ? ' hh:mm aa' : ''}`;
 	const [isValid, setIsValid] = useState(null);
 	const [dateFieldTarget, setDateFieldTarget] = useState(null);
 
@@ -62,6 +60,13 @@ const FormDateField = ({
 
 	const onChangeDateField = (newDate) => {
 		onChangeField(name, newDate);
+	};
+
+	const onBlurDateField = ({ currentTarget }) => {
+		if (!dateFieldTarget) {
+			setDateFieldTarget(currentTarget);
+		}
+		setIsValid(currentTarget.checkValidity());
 	};
 
 	return (
@@ -80,12 +85,14 @@ const FormDateField = ({
 						setIsValid={setIsValid}
 						dateFieldTarget={dateFieldTarget}
 						setDateFieldTarget={setDateFieldTarget}
+						min={minDate}
 					/>
 				}
 				minDate={minDate}
 				maxDate={maxDate}
 				onCalendarClose={onCalendarClose}
 				onChange={onChangeDateField}
+				onBlur={onBlurDateField}
 				className={`form-control form-control-sm ${isValid === false ? 'is-invalid' : ''} `}
 			/>
 		</>
