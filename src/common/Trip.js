@@ -1,4 +1,4 @@
-import { isValidDate } from '../utils/helper';
+import { isValidDate, getDuration } from '../utils/helper';
 import Todo from './Todo';
 
 export default class Trip {
@@ -24,6 +24,7 @@ export default class Trip {
 		this.startDate = startDate ? new Date(startDate) : null;
 		this.endDate = endDate ? new Date(endDate) : null;
 		this.todos = Array.isArray(todos) ? todos.map((todo) => new Todo(todo)) : [];
+		this.duration = getDuration(this.startDate, this.endDate);
 		this.reminder =
 			isValidDate(reminderDate) && reminderDate > new Date() ? reminderDate : null;
 		this.isReminderPending =
