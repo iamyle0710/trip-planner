@@ -1,3 +1,20 @@
+.gridPanel {
+	display: inline-block;
+	overflow:auto;
+}
+
 .gridPanel tr.selected{
 	background : lightblue !important;
 }
+
+.gridPanel td {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.gridPanel td:nth-child(2){
+	width : 100%;
+	max-width : 200px;
+}
+

@@ -220,7 +220,7 @@ class App extends React.Component {
 					<div className="header">Trip Planner</div>
 				</Row>
 				<Row className="flex-fill d-flex content-row">
-					<Col md={2} className="content-row">
+					<Col sm={12} md={3} lg={3} className="content-row">
 						<FilterPanel
 							filterCategory={filterCategory}
 							onChangeSearchKeyword={this.onChangeSearchKeyword}
@@ -229,7 +229,12 @@ class App extends React.Component {
 							onAddATrip={this.onAddATrip}
 						/>
 					</Col>
-					<Col md={selectTrip ? 5 : 10} className="content-row">
+					<Col
+						sm={12}
+						md={selectTrip ? 5 : 9}
+						lg={selectTrip ? 6 : 9}
+						className="content-row"
+					>
 						<GridPanel
 							trips={displayTrips}
 							onSelectTrip={this.onSelectTrip}
@@ -237,7 +242,7 @@ class App extends React.Component {
 						/>
 					</Col>
 					{selectTrip && (
-						<Col md={5} className="content-row">
+						<Col sm={12} md={4} lg={3} className="content-row">
 							<DetailPanel
 								key={selectTrip.id}
 								trip={selectTrip}
