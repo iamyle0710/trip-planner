@@ -43,10 +43,11 @@ class FilterPanel extends React.Component {
 
 	// Filter categories
 	onClickCategory = ({ target }) => {
-		const { onChangeFilterCategory } = this.props;
+		const { onChangeFilter } = this.props;
+		const { searchKeyword } = this.state;
 
-		if (onChangeFilterCategory) {
-			onChangeFilterCategory(CATEGORY[target.id]);
+		if (onChangeFilter) {
+			onChangeFilter(searchKeyword, CATEGORY[target.id]);
 		}
 	};
 

@@ -29,8 +29,6 @@ class App extends React.Component {
 	}
 
 	componentDidMount() {
-		// Default sample data for testing the data flow
-
 		// fetch data and convert to Trip models
 		const trips = FakeServer.loadTrips().map((data) => new Trip(data));
 
@@ -96,6 +94,14 @@ class App extends React.Component {
 
 		this.setState({
 			selectTrip: newTrip,
+		});
+	};
+
+	// Callback function to change search keyword
+	onChangeFilter = (searchKeyword, filterCategory) => {
+		this.setState({
+			searchKeyword,
+			filterCategory,
 		});
 	};
 
@@ -219,6 +225,7 @@ class App extends React.Component {
 							filterCategory={filterCategory}
 							onChangeSearchKeyword={this.onChangeSearchKeyword}
 							onChangeFilterCategory={this.onChangeFilterCategory}
+							onChangeFilter={this.onChangeFilter}
 							onAddATrip={this.onAddATrip}
 						/>
 					</Col>
