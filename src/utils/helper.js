@@ -15,7 +15,7 @@ export const filterTrips = (trips = [], searchKeyword = '', filterCategory = CAT
 		return isCategoryMatched && isSearchMatched;
 	});
 
-export const isValidDate = (date) => date instanceof Date && !isNaN(date);
+export const isValidDate = (date) => date instanceof Date && !isNaN(date.getTime());
 
 export const getDuration = (start, end) => {
 	const startDate = new Date(start);
@@ -25,5 +25,5 @@ export const getDuration = (start, end) => {
 		return Math.floor((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
 	}
 
-	return false;
+	return 0;
 };
