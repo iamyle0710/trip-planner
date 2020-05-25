@@ -219,7 +219,6 @@ class DetailPanel extends React.Component {
 							</Col>
 							<Col>
 								<FormField
-									required
 									as="input"
 									type="text"
 									label="Description"
