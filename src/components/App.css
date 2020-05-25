@@ -9,13 +9,6 @@
     flex: 1;
 }
 
-.container{
-    display: flex;
-    flex-direction: row;
-    flex: 1;
-    width: 100%;
-}
-
 .content-row{
     overflow: auto;
     max-height: 100%;
