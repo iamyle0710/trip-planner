@@ -10,26 +10,6 @@ const TRIP_STATUS = {
 	READY: 'Ready',
 };
 
-const SNOOZE = {
-	TEN_SECS: { name: '10 seconds', value: 10 * 1000 },
-	FIVE_MINS: { name: '5 minutes', value: 60 * 5 * 1000 },
-	FIFTEEN_MINS: { name: '15 minutes', value: 60 * 15 * 1000 },
-	THIRTY_MINS: { name: '30 minutes', value: 60 * 30 * 1000 },
-	ONE_HOUR: { name: '1 hour', value: 60 * 60 * 1 * 1000 },
-	SIX_HOURS: { name: '6 hours', value: 60 * 60 * 6 * 1000 },
-	TWELEVE_HOURS: { name: '12 hours', value: 60 * 60 * 12 * 1000 },
-};
-
-const COLUMN_KEY = {
-	TITLE: { name: 'Title', sortKey: 'title' },
-	DESTINATION: { name: 'Destination', sortKey: 'destination' },
-	DURATION: { name: 'Duration', sortKey: 'duration' },
-	CATEGORY: { name: 'Category', sortKey: 'category' },
-	REMINDER: { name: 'Reminder Set', sortKey: 'reminder' },
-	COMPLETE_ITEMS: { name: 'Completed Items', sortKey: 'todos' },
-	TRIP_STATE: { name: 'Trip State', sortKey: 'status' },
-};
-
 const SAMPLE_DATA = [
 	{
 		id: '0',
@@ -104,8 +84,6 @@ const SAMPLE_DATA = [
 
 export default {
 	CATEGORY,
-	COLUMN_KEY,
 	SAMPLE_DATA,
-	SNOOZE,
 	TRIP_STATUS,
 };
