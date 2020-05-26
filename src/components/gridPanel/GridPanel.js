@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Table } from 'react-bootstrap';
 
-import Constant from '../../common/Constant';
-import { isValidDate } from '../../utils/helper';
 import './GridPanel.css';
-
-const { COLUMN_KEY } = Constant;
 
 // sort two reminder dates
 const compareReminders = (date1, date2) => {
@@ -25,7 +21,17 @@ class GridPanel extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			sortKey: null,
+			sortBy: null,
+			sortAsc: null,
+			columns: [
+				{ name: 'Title', sortKey: 'title' },
+				{ name: 'Destination', sortKey: 'destination' },
+				{ name: 'Duration', sortKey: 'duration' },
+				{ name: 'Category', sortKey: 'category' },
+				{ name: 'Reminder Set', sortKey: 'reminder' },
+				{ name: 'Completed Items', sortKey: 'todos' },
+				{ name: 'Trip State', sortKey: 'status' },
+			],
 		};
 	}
 
@@ -40,49 +46,55 @@ class GridPanel extends React.Component {
 
 	// Click sort column
 	onClickSort = (sortKey) => {
-		this.setState({ sortKey });
+		this.setState(({ sortBy, sortAsc }) => ({
+			sortBy: sortKey,
+			sortAsc: sortBy === sortKey ? !sortAsc : true,
+		}));
 	};
 
-	sortTrips = () => {
-		const { sortKey } = this.state;
+	sortTrips = (sortAsc, sortBy) => {
 		const { trips } = this.props;
-		const sortedTrips = sortKey
-			? trips.slice().sort((trip1, trip2) => {
-					switch (sortKey) {
-						case COLUMN_KEY.TITLE.sortKey:
-						case COLUMN_KEY.CATEGORY.sortKey:
-						case COLUMN_KEY.DESTINATION.sortKey:
-						case COLUMN_KEY.TRIP_STATE.sortKey:
-							return trip1[sortKey].localeCompare(trip2[sortKey]);
-						case COLUMN_KEY.REMINDER.sortKey:
-							return compareReminders(trip1[sortKey], trip2[sortKey]);
-						case COLUMN_KEY.COMPLETE_ITEMS.sortKey:
-							return compareCompleteItems(trip1[sortKey], trip2[sortKey]);
-						case COLUMN_KEY.DURATION.sortKey:
-							return trip1[sortKey] - trip2[sortKey];
+		return sortBy
+			? [...trips].sort((trip1, trip2) => {
+					const data1 = trip1[sortBy];
+					const data2 = trip2[sortBy];
+					const orderFactor = sortAsc === false ? -1 : 1;
+
+					switch (sortBy) {
+						case 'title':
+						case 'category':
+						case 'destination':
+						case 'status':
+							return data1.localeCompare(data2) * orderFactor;
+						case 'reminder':
+							return compareReminders(data1, data2) * orderFactor;
+						case 'todos':
+							return compareCompleteItems(data1, data2) * orderFactor;
+						case 'duration':
+							return (data1 - data2) * orderFactor;
 						default:
 							return 0;
 					}
 			  })
 			: trips;
-		return sortedTrips;
 	};
 
 	render() {
 		const { selectTripId } = this.props;
-		const { sortKey } = this.state;
-		const sortedTrips = this.sortTrips();
+		const { sortAsc, sortBy, columns } = this.state;
+		const sortedTrips = this.sortTrips(sortAsc, sortBy);
 		return (
 			<Table striped bordered hover className="gridPanel">
 				<thead>
 					<tr>
-						{Object.keys(COLUMN_KEY).map((key) => (
-							<SortColumn
-								key={key}
-								name={COLUMN_KEY[key].name}
-								sortKey={COLUMN_KEY[key].sortKey}
+						{columns.map((column) => (
+							<HeaderColumn
+								key={column.sortKey}
+								name={column.name}
+								sortKey={column.sortKey}
+								sortAsc={sortAsc}
+								sortBy={sortBy}
 								onSort={this.onClickSort}
-								sorting={COLUMN_KEY[key].sortKey === sortKey}
 							/>
 						))}
 					</tr>
@@ -122,11 +134,22 @@ class GridPanel extends React.Component {
 	}
 }
 
-const SortColumn = ({ name, sortKey, onSort, sorting }) => (
-	<th onClick={() => onSort(sortKey)}>
-		{name}
-		<i className="fa fa-sort ml-2" style={{ color: sorting ? '#007bff' : '' }} />
-	</th>
-);
+const HeaderColumn = ({ name, sortKey, sortAsc, sortBy, onSort }) => {
+	let sortIconClass = 'fa-sort';
+
+	if (sortKey === sortBy) {
+		sortIconClass = sortAsc === true ? 'fa-sort-asc' : 'fa-sort-desc';
+	}
+
+	return (
+		<th onClick={() => onSort(sortKey)}>
+			{name}
+			<i
+				className={`fa ml-2 ${sortIconClass}`}
+				style={{ color: sortKey === sortBy ? '#007bff' : '' }}
+			/>
+		</th>
+	);
+};
 
 export default GridPanel;
