@@ -4,6 +4,10 @@
 	margin:  15px 0;
 }
 
+.gridPanel th{
+	white-space: nowrap;
+}
+
 .gridPanel tr.selected{
 	background : lightblue !important;
 }
@@ -14,7 +18,8 @@
 	overflow: hidden;
 }
 
-.gridPanel td:nth-child(2){
+.gridPanel th:nth-child(1),
+.gridPanel td:nth-child(1){
 	width : 100%;
 	max-width : 200px;
 }

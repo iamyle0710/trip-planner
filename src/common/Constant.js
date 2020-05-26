@@ -20,6 +20,16 @@ const SNOOZE = {
 	TWELEVE_HOURS: { name: '12 hours', value: 60 * 60 * 12 * 1000 },
 };
 
+const COLUMN_KEY = {
+	TITLE: { name: 'Title', sortKey: 'title' },
+	DESTINATION: { name: 'Destination', sortKey: 'destination' },
+	DURATION: { name: 'Duration', sortKey: 'duration' },
+	CATEGORY: { name: 'Category', sortKey: 'category' },
+	REMINDER: { name: 'Reminder Set', sortKey: 'reminder' },
+	COMPLETE_ITEMS: { name: 'Completed Items', sortKey: 'todos' },
+	TRIP_STATE: { name: 'Trip State', sortKey: 'status' },
+};
+
 const SAMPLE_DATA = [
 	{
 		id: '0',
@@ -94,6 +104,7 @@ const SAMPLE_DATA = [
 
 export default {
 	CATEGORY,
+	COLUMN_KEY,
 	SAMPLE_DATA,
 	SNOOZE,
 	TRIP_STATUS,
