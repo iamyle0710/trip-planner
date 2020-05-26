@@ -11,9 +11,15 @@ import {
 	ButtonGroup,
 } from 'react-bootstrap';
 
-import Constant from '../../common/Constant';
-
-const { SNOOZE } = Constant;
+const snoozeOptions = [
+	{ id: '10s', name: '10 seconds', value: 10 * 1000 },
+	{ id: '5m', name: '5 minutes', value: 60 * 5 * 1000 },
+	{ id: '15m', name: '15 minutes', value: 60 * 15 * 1000 },
+	{ id: '30m', name: '30 minutes', value: 60 * 30 * 1000 },
+	{ id: '1hr', name: '1 hour', value: 60 * 60 * 1 * 1000 },
+	{ id: '6hr', name: '6 hours', value: 60 * 60 * 6 * 1000 },
+	{ id: '12hr', name: '12 hours', value: 60 * 60 * 12 * 1000 },
+];
 
 const ReminderModal = ({ trip, onHide, onClickDetailButton, snoozeTripReminder }) => (
 	<Modal show size="lg" aria-labelledby="contained-modal-title-vcenter" centered onHide={onHide}>
@@ -107,14 +113,13 @@ const ReminderModal = ({ trip, onHide, onClickDetailButton, snoozeTripReminder }
 				variant="primary"
 				title="Snooze"
 			>
-				{Object.keys(SNOOZE).map((key) => (
+				{snoozeOptions.map((option) => (
 					<Dropdown.Item
-						eventKey={key}
-						key={key}
-						value={SNOOZE[key].value}
-						onSelect={(eventKey) => snoozeTripReminder(trip.id, SNOOZE[eventKey].value)}
+						key={option.id}
+						value={option.value}
+						onSelect={() => snoozeTripReminder(trip.id, option.value)}
 					>
-						{SNOOZE[key].name}
+						{option.name}
 					</Dropdown.Item>
 				))}
 			</DropdownButton>
