@@ -1,7 +1,7 @@
 # Trip Planner
 
 ## Introduction
-A trip planner in overall keep track of individual trip records. It allows user to add/edit/delete trips and each trip has its own list of todo items. In addition, users can set a reminder date and time to remind themselves the details of trips.
+A trip planner in overall keep track of individual trip records. It allows user to add/edit/delete trips and each trip has its own list of todo items. In addition, users can set a reminder date and time to remind themselves the details of trips. [Click to check this application hosted on AWS S3](http://tripplanner.s3-website.us-east-2.amazonaws.com/)
 
 ## Code introduction
 - `src/common`
