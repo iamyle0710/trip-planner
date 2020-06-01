@@ -1,5 +1,8 @@
 import { isValidDate, getDuration } from '../utils/helper';
 import Todo from './Todo';
+import Constant from './Constant';
+
+const { TRIP_STATUS, CATEGORY } = Constant;
 
 export default class Trip {
 	constructor({
@@ -18,7 +21,7 @@ export default class Trip {
 
 		this.id = id;
 		this.title = title;
-		this.category = category;
+		this.category = category || CATEGORY.NONE;
 		this.destination = destination;
 		this.description = description;
 		this.startDate = startDate ? new Date(startDate) : null;
@@ -29,6 +32,6 @@ export default class Trip {
 			isValidDate(reminderDate) && reminderDate > new Date() ? reminderDate : null;
 		this.isReminderPending =
 			isValidDate(reminderDate) && reminderDate.getTime() - new Date().getTime() > 0;
-		this.status = status;
+		this.status = status || TRIP_STATUS.CREATED;
 	}
 }

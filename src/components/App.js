@@ -12,7 +12,7 @@ import DetailPanel from './detailPanel/DetailPanel';
 import ReminderModal from './modal/ReminderModal';
 import './App.css';
 
-const { CATEGORY, TRIP_STATUS } = Constant;
+const { CATEGORY } = Constant;
 
 class App extends React.Component {
 	constructor() {
@@ -83,14 +83,8 @@ class App extends React.Component {
 
 	// Callback function to add a new trip
 	onAddATrip = () => {
-		const newTrip = new Trip({
-			category: CATEGORY.NONE,
-			status: TRIP_STATUS.CREATED,
-			startDate: new Date(),
-		});
-
 		this.setState({
-			selectTrip: newTrip,
+			selectTrip: new Trip({}),
 		});
 	};
 
