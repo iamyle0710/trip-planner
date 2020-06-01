@@ -274,12 +274,12 @@ class DetailPanel extends React.Component {
 									onRemoveTodo={this.onRemoveTodo}
 								/>
 							))}
-							<ListGroup.Item>
-								<Button variant="outline-primary" onClick={this.onAddTodo}>
-									Add Todo Item
-								</Button>
-							</ListGroup.Item>
 						</ListGroup>
+						<ListGroup.Item>
+							<Button variant="outline-primary" onClick={this.onAddTodo}>
+								Add Todo Item
+							</Button>
+						</ListGroup.Item>
 					</Form.Group>
 					<Form.Group>
 						<FormDateField
