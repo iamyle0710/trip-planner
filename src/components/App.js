@@ -67,21 +67,18 @@ class App extends React.Component {
 	};
 
 	snoozeTripReminder = (tripId, snoozeTime) => {
-		this.setState(
-			({ trips }) => ({
-				trips: trips.map((trip) => {
-					if (trip.id === tripId) {
-						return {
-							...trip,
-							reminder: new Date(trip.reminder.getTime() + snoozeTime),
-						};
-					}
-					return trip;
-				}),
-				reminderTrip: null,
-			}),
-			this.processTrips
-		);
+		const { trips } = this.state;
+		const newTrips = trips.map((trip) => {
+			if (trip.id === tripId) {
+				trip.reminder = new Date(trip.reminder.getTime() + snoozeTime);
+				return trip;
+			}
+			return trip;
+		});
+		this.setState({ trips: newTrips }, this.processTrips);
+
+		// Save the trip with updated reminder time to local storage
+		FakeServer.saveTrips(newTrips);
 	};
 
 	// Callback function to add a new trip
