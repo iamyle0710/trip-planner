@@ -160,6 +160,9 @@ class DetailPanel extends React.Component {
 			isValidated,
 		} = this.state;
 		const isNewTrip = id === undefined;
+		const minEndDate = isValidDate(startDate)
+			? new Date(startDate.getTime() + 24 * 60 * 60 * 1000)
+			: new Date();
 
 		return (
 			<div className="detail-panel d-flex">
@@ -252,7 +255,7 @@ class DetailPanel extends React.Component {
 									value={
 										isValidDate(endDate) && endDate > startDate ? endDate : null
 									}
-									minDate={startDate}
+									minDate={minEndDate}
 									onChangeField={this.onChangeField}
 									invalidMessage="it needs to be later than the start date"
 								/>

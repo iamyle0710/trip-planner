@@ -103,13 +103,6 @@ class App extends React.Component {
 		});
 	};
 
-	// Callback function to change filter category
-	onChangeFilterCategory = (filterCategory) => {
-		this.setState({
-			filterCategory,
-		});
-	};
-
 	// Callback function to cancel editing a form
 	onCancelEdit = () => {
 		this.setState({
@@ -215,7 +208,6 @@ class App extends React.Component {
 						<FilterPanel
 							filterCategory={filterCategory}
 							onChangeSearchKeyword={this.onChangeSearchKeyword}
-							onChangeFilterCategory={this.onChangeFilterCategory}
 							onChangeFilter={this.onChangeFilter}
 							onAddATrip={this.onAddATrip}
 						/>
