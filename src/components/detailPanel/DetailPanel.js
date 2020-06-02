@@ -242,7 +242,7 @@ class DetailPanel extends React.Component {
 									label="Start Date"
 									name="startDate"
 									value={startDate}
-									minDate={new Date(new Date().toLocaleDateString())}
+									minDate={new Date()}
 									onChangeField={this.onChangeField}
 									invalidMessage="Select a date"
 								/>
@@ -286,8 +286,8 @@ class DetailPanel extends React.Component {
 							showTime
 							label="Set Reminder"
 							name="reminder"
-							value={reminder}
-							minDate={new Date()}
+							value={isValidDate(reminder) && reminder > new Date() ? reminder : null}
+							minDate={new Date(new Date().getTime() + 5 * 60 * 1000)}
 							onChangeField={this.onChangeField}
 						/>
 					</Form.Group>
