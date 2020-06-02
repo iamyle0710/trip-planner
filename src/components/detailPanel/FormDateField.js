@@ -59,16 +59,16 @@ const FormDateField = ({
 		}
 	};
 
+	const onChangeDateField = (newDate) => {
+		onChangeField(name, newDate);
+	};
+
 	const onChangeCheckStatus = ({ currentTarget }) => {
 		const { checked } = currentTarget;
 		const newDate = checked ? minDate : null;
 
 		setIsChecked(checked);
 		onChangeDateField(newDate);
-	};
-
-	const onChangeDateField = (newDate) => {
-		onChangeField(name, newDate);
 	};
 
 	const onBlurDateField = ({ currentTarget }) => {
