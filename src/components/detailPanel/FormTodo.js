@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { ListGroup, InputGroup, Form, Button } from 'react-bootstrap';
 
 const FormTodo = ({ id, isComplete, name, placeholder, onRemoveTodo, onChangeTodo }) => {
-	const [isValid, setIsValid] = useState(null);
+	const [isTouched, setIsTouched] = useState(false);
 
-	const onBlur = ({ currentTarget }) => {
-		setIsValid(currentTarget.checkValidity());
+	const onBlur = () => {
+		setIsTouched(true);
 	};
 
 	const onChange = ({ target }) => {
@@ -42,7 +42,7 @@ const FormTodo = ({ id, isComplete, name, placeholder, onRemoveTodo, onChangeTod
 					name="name"
 					value={name}
 					onBlur={onBlur}
-					className={isValid === false ? 'is-invalid' : ''}
+					className={isTouched && !name ? 'is-invalid' : ''}
 					onChange={onChange}
 				/>
 				<InputGroup.Append>

@@ -14,7 +14,8 @@ class CustomInput extends React.Component {
 			onChange,
 			onBlur,
 			invalidMessage,
-			isValid,
+			isError,
+			isTouched,
 			min,
 		} = this.props;
 
@@ -28,7 +29,7 @@ class CustomInput extends React.Component {
 					onChange={onChange}
 					onBlur={onBlur}
 					min={min}
-					className={isValid === false ? 'is-invalid' : ''}
+					className={required && isTouched && !value && isError ? 'is-invalid' : ''}
 				/>
 				<Form.Control.Feedback type="invalid">{invalidMessage}</Form.Control.Feedback>
 			</Form.Group>
@@ -41,6 +42,7 @@ const FormDateField = ({
 	value,
 	name,
 	onChangeField,
+	isError,
 	minDate,
 	maxDate,
 	required,
@@ -49,14 +51,11 @@ const FormDateField = ({
 }) => {
 	const timeInputLabel = showTime === true ? 'Time:' : '';
 	const dateFormat = `MM/dd/yyyy${showTime === true ? ' hh:mm aa' : ''}`;
-	const [isValid, setIsValid] = useState(null);
+	const [isTouched, setIsTouched] = useState(false);
 	const [isChecked, setIsChecked] = useState(showTime && value !== null);
-	const [dateFieldTarget, setDateFieldTarget] = useState(null);
 
 	const onCalendarClose = () => {
-		if (dateFieldTarget) {
-			setIsValid(dateFieldTarget.checkValidity());
-		}
+		setIsTouched(true);
 	};
 
 	const onChangeDateField = (newDate) => {
@@ -71,11 +70,8 @@ const FormDateField = ({
 		onChangeDateField(newDate);
 	};
 
-	const onBlurDateField = ({ currentTarget }) => {
-		if (!dateFieldTarget) {
-			setDateFieldTarget(currentTarget);
-		}
-		setIsValid(currentTarget.checkValidity());
+	const onBlurDateField = () => {
+		setIsTouched(true);
 	};
 
 	return (
@@ -101,10 +97,8 @@ const FormDateField = ({
 					customInput={
 						<CustomInput
 							invalidMessage={invalidMessage}
-							isValid={isValid}
-							setIsValid={setIsValid}
-							dateFieldTarget={dateFieldTarget}
-							setDateFieldTarget={setDateFieldTarget}
+							isError={isError}
+							isTouched={isTouched}
 							min={minDate}
 						/>
 					}
@@ -113,9 +107,7 @@ const FormDateField = ({
 					onCalendarClose={onCalendarClose}
 					onChange={onChangeDateField}
 					onBlur={onBlurDateField}
-					className={`form-control form-control-sm ${
-						isValid === false ? 'is-invalid' : ''
-					} `}
+					className="form-control form-control-sm"
 				/>
 			)}
 		</>

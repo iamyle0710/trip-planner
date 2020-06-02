@@ -243,6 +243,11 @@ class DetailPanel extends React.Component {
 									name="startDate"
 									value={startDate}
 									minDate={new Date()}
+									isError={
+										!startDate ||
+										(isValidDate(startDate) &&
+											startDate < new Date(new Date().toLocaleDateString()))
+									}
 									onChangeField={this.onChangeField}
 									invalidMessage="Select a date"
 								/>
@@ -254,6 +259,9 @@ class DetailPanel extends React.Component {
 									name="endDate"
 									value={
 										isValidDate(endDate) && endDate > startDate ? endDate : null
+									}
+									isError={
+										!endDate || (isValidDate(endDate) && endDate <= startDate)
 									}
 									minDate={minEndDate}
 									onChangeField={this.onChangeField}

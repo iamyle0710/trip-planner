@@ -13,10 +13,11 @@ const FormField = ({
 	invalidMessage,
 	children,
 }) => {
-	const [isValid, setIsValid] = useState(null);
+	const [isTouched, setIsTouched] = useState(false);
 
-	const onBlur = ({ currentTarget }) => {
-		setIsValid(currentTarget.checkValidity());
+	const onBlur = () => {
+		// setIsValid(currentTarget.checkValidity());
+		setIsTouched(true);
 	};
 
 	const onChange = ({ target }) => {
@@ -34,7 +35,7 @@ const FormField = ({
 				placeholder={placeholder}
 				value={value}
 				name={name}
-				className={isValid === false ? 'is-invalid' : ''}
+				className={required && isTouched && !value ? 'is-invalid' : ''}
 				onBlur={onBlur}
 				onChange={onChange}
 			>
